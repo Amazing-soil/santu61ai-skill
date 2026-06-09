@@ -1,0 +1,7 @@
+interface:
+  display_name: "AI 科技口播视频生产"
+  short_description: "从口播视频到可编辑剪辑工程"
+  brand_color: "#1DE58C"
+  default_prompt: "Use $ai-tech-video-production to turn my Chinese AI talking-head video and script into an editable Remotion project with safe PIP, asset timing, and final MP4."
+policy:
+  allow_implicit_invocation: true

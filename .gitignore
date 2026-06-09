@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+out/
+dist/
+*.mp4
+*.mov
+*.mkv
+*.wav
+*.mp3
+*.env
+tmp/
