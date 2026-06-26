@@ -1,93 +1,198 @@
 # AI Tech Video Production
 
-面向中文 AI 科技口播短视频的端到端生产 skill。输入口播视频与文案后，指导 Agent 先切真实时间线，再配置混合素材，生成可编辑 Remotion 工程、导出 MP4，并检查 PIP、字幕安全区、转场和图层。
+AI 科技中文口播短视频的端到端剪辑 skill。输入口播视频和文案后，按真实语音时间线规划素材，生成或整理可读素材，产出可编辑 Remotion 工程、可选字幕轨、最终高码率 MP4 和关键帧检查图。
 
-适合 AI 工具、AI 工作流、GEO、科技观点、产品实操等知识型竖屏短视频。
+## Standalone
 
-## 核心能力
+本 skill 可以单独安装和使用，不依赖 `ai-tech-video-assets` 或其他自定义 skill。
 
-- 基于真实口播视频切时间线，不按文案长度猜时长
-- 为每个语义段匹配实操录屏、HTML/Anime.js 动效、AI 图片或留白
-- 生成以 `src/timeline.json` 为快速修改入口的 Remotion 工程
-- 保证原口播视频底层、素材覆盖层、真人 PIP 层的图层关系
-- 检查顶部安全区、中下字幕区和右下 PIP 保护区
-- 使用覆盖式淡入，避免素材切换时闪回口播底图
-- 导出最终 MP4、关键帧检查图和剪辑师交付说明
+可选增强：
 
-## 默认成片规范
+- 图片生成工具：用于生成 GPT Image/AI 图片素材。
+- ASR/Whisper/faster-whisper：用于切真实语音时间线和字幕。
+- Remotion/Node.js/FFmpeg：用于生成工程、渲染视频和做媒体检查。
 
-- 画幅：`1080x1920`
-- 默认不烧录字幕，为后期字幕保留空间
-- 字幕安全区：约 `Y=1120-1360`
-- 非图片素材核心区：约 `Y=280-1080`
-- 右下真人 PIP：仅引用原口播视频，使用等比例裁切
-- 每 30 秒至少安排 1 张 AI 图片素材，最好 1-2 张，实操录屏段可例外
+如果环境里没有生图工具或生图工具无法提供本地图片路径，仍然可以使用本 skill：改用 HTML/Remotion 动效、用户提供的图片/截图/录屏，或先通过可落盘的 API/CLI 生成图片文件。
 
-## 工作流
+## What It Does
 
-1. 检查口播视频规格、时长和已有素材。
-2. 依据字幕时间戳、语音停顿或人工校准切分真实时间线。
-3. 按语义选择素材类型，并检查素材密度。
-4. 生成或整理素材，统一放入工程媒体目录。
-5. 创建可编辑 Remotion 工程，并维护三层图层结构。
-6. 抽取关键帧检查布局、PIP 和安全区。
-7. 运行图层校验和 TypeScript 检查。
-8. 导出 MP4，并抽查转场帧是否闪屏。
+- 按真实口播切时间线，不按文案估算硬配素材。
+- 规划素材类型：实操录屏/截图、HTML/Anime.js/Remotion 动效、GPT Image/AI 图片、无素材过渡。
+- 生成或整理素材，并统一放进工程媒体目录。
+- 创建可编辑 Remotion 工程，核心配置写入 `src/timeline.json`。
+- 按需生成可编辑字幕轨，字幕以真实语音口述为准。
+- 渲染最终高码率 MP4，并用 `ffprobe`、关键帧抽帧图做验收。
 
-详细规则见：
+## Inputs
 
-- [真实时间线工作流](./references/timeline-workflow.md)
-- [Remotion 工程规则](./references/remotion-rules.md)
-- [交付前验收清单](./references/quality-checks.md)
+最少需要：
 
-## 使用示例
+- 口播视频文件路径。
+- 口播文案或大纲。
+
+可选：
+
+- 已有图片、截图、录屏素材目录。
+- 是否需要字幕/烧录字幕。
+- 品牌色、禁用风格、参考视频或封面要求。
+- 输出目录或项目名。
+
+示例请求：
 
 ```text
-Use $ai-tech-video-production.
-
+$ai-tech-video-production
 口播视频：/path/to/talking-head.mp4
-口播文案：<粘贴文案>
-
-请完成素材配置和剪辑，生成可编辑 Remotion 工程、最终 MP4 和关键帧检查图。
+文案：……
+要求：生成可编辑 Remotion 工程，导出 1080x1920 高码率 MP4，不烧字幕，给后期字幕留空间。
 ```
 
-## 推荐输入
-
-- 一条完整的竖屏口播视频
-- 与视频一致的口播文案
-- 已有截图、实操录屏或品牌素材目录（可选）
-- 是否需要烧录字幕、目标平台和风格偏好（可选）
-
-## 标准交付物
+字幕示例：
 
 ```text
-remotion_project/
-├── public/media/source_talking.mp4
-├── public/media/images/
-├── public/media/motion/
-├── src/Video.tsx
-├── src/timeline.json
-├── scripts/validate-layering.mjs
-├── docs/README.md
-└── out/
+$ai-tech-video-production
+基于这个口播视频生成剪辑工程和可编辑字幕轨，字幕按真实口播，不要直接照文案。
+最终导出高码率 MP4，并给我关键帧检查图。
 ```
 
-## 环境依赖
+## Workflow
 
-- Node.js
-- Remotion
-- FFmpeg / FFprobe
-- 支持读取视频、生成图片和执行本地命令的 Agent 环境
+1. 读取口播视频和文案。
+2. 用音频/ASR/人工核对切真实时间线。
+3. 按语义段规划素材类型。
+4. 先定视觉色彩策略，避免全片青绿/荧光绿。
+5. 生成或整理素材到工程媒体目录。
+6. 创建 Remotion 工程和 `src/timeline.json`。
+7. 处理 PIP：开头居中放大、正文中间下方小 PIP、结尾回到居中。
+8. 如需字幕，生成可编辑字幕轨，不只烧进 MP4。
+9. 渲染高码率 MP4。
+10. 抽关键帧检查素材时间、PIP 遮挡、字幕安全区、色彩占比和转场。
 
-本 skill 提供生产规则和模板，不内置完整 Remotion 项目脚手架，也不会上传用户的视频或私有素材。
+## Image Asset Rule
 
-## Skill 文件
+工程可引用的图片必须是本地可读文件，不能只存在于聊天界面。
 
-- `SKILL.md`：Agent 核心指令
-- `agents/openai.yaml`：OpenAI/Codex 展示与调用配置
-- `references/`：时间线、Remotion 和验收规则
-- `templates/`：时间线表与剪辑师交付模板
+推荐目录：
 
-## License
+```text
+public/media/images/
+```
 
-本 skill 随仓库使用 [MIT License](../LICENSE) 发布。
+推荐引用：
+
+```json
+{
+  "kind": "image",
+  "asset": "media/images/scene-01.png"
+}
+```
+
+如果内置生图工具只把图片返回到聊天界面、不给本地路径，处理方式是：
+
+1. 优先从工具默认生成目录复制图片到 `public/media/images/`。
+2. 如果没有可访问文件路径，改用可落盘的 API/CLI 重新生成。
+3. 如果仍无法落盘，请用户保存/提供图片文件。
+4. 在图片落盘之前，不要把该图片写入 `src/timeline.json`。
+
+交付前必须确认：
+
+```bash
+file public/media/images/*.png
+```
+
+并通过 Remotion 渲染或抽帧确认图片没有空白、丢失或路径错误。
+
+## Output Structure
+
+推荐输出结构：
+
+```text
+project-name/
+  package.json
+  src/
+    index.ts
+    Video.tsx
+    timeline.json
+  public/
+    media/
+      source_talking.mp4
+      images/
+      videos/
+  out/
+    final.mp4
+    final-checks/
+  docs/
+    README.md
+```
+
+## Final MP4 Encoding
+
+默认交付高码率 MP4：
+
+- `1080x1920`
+- `30fps`
+- H.264
+- 视频目标码率默认 `8M`
+- `maxrate 10M`
+- `bufsize 20M`
+- AAC 音频不低于 `128k`
+
+运动素材多、录屏细节多或用户要求更清晰时，视频目标码率用 `10M-12M`。
+
+不要把低码率预览版或单纯 CRF 压出来的小文件当成最终交付。
+
+## Verification
+
+建议至少运行：
+
+```bash
+npm run typecheck
+npm run validate-layering
+npm run render
+ffprobe -hide_banner -v error -show_entries format=duration,bit_rate,size:stream=index,codec_type,codec_name,duration,bit_rate -of json out/final.mp4
+```
+
+还应抽关键帧检查：
+
+- 开头钩子段是否有语义背景素材。
+- 素材出现时间是否和真实口播对齐。
+- 字幕安全区是否被占用。
+- 中间下方 PIP 是否遮挡核心信息。
+- 结尾人物是否回到居中强化出镜。
+- 图片素材是否成功读取，没有黑屏/空白/路径丢失。
+
+## Common Problems
+
+素材提前或滞后：
+
+- 不要按文案估时间。
+- 重新用 ASR/音频波形切真实时间线。
+- 更新 `src/timeline.json` 中每段 `start` / `end`。
+
+图片在聊天里能看到，但视频里没有：
+
+- 说明图片没有进入工程媒体目录。
+- 将图片复制到 `public/media/images/`。
+- 确认 timeline 引用的是 `media/images/...`。
+
+最终 MP4 文件太小：
+
+- 检查是否用了单纯 CRF/质量模式。
+- 改用目标码率控制。
+- 用 `ffprobe` 验证视频码率。
+
+字幕和口播不一致：
+
+- 用户文案只做语义参考。
+- 最终字幕以 ASR/人工校准后的真实口播为准。
+
+## Publishing Notes
+
+发布到 GitHub 时，至少包含：
+
+- `SKILL.md`
+- `README.md`
+- `references/`
+- `templates/`
+- `agents/`，如需要
+
+安装者只要安装本 skill 目录，就能触发 `$ai-tech-video-production` 并按 README 执行。其他 skill 只能作为可选增强，不能作为必需依赖。

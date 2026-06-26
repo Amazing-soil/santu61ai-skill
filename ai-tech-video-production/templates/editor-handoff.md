@@ -3,11 +3,14 @@
 ## 基本规则
 
 - 画幅：1080x1920。
-- 默认不额外加字幕，保留中间偏下字幕区。
-- 真人 PIP 默认三阶段：开头前 `3 秒` 居中放大、正文右下 `300x400`、最后 `3 秒` 回到中央；三段之间平滑移动缩放。
+- 默认不额外加字幕，保留中间偏下字幕区；如果本项目要求生成字幕，字幕以真实语音口播 ASR/人工校准为准，用户文案/旧字幕只做参考。
+- 字幕样式：继承全局 CSS 的 `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif` 字体栈，`fontWeight: 900`，白字，黑色阴影，动态字号。
+- 字幕切分：按自然句、语义短句和停顿切分，每句尽量单行；长句先缩小字号，再语义拆条，不机械换行。
+- 真人 PIP 默认三阶段：开头前 `3 秒` 居中放大、正文中间下方 `360x480`、最后 `3 秒` 回到中央；三段之间平滑移动缩放。
 - 开头和结尾居中人物不是唯一内容，必须保留相关背景素材，并配少量钩子/结论标签。
 - 非图片素材整体下移，`Y=0-260` 只放背景氛围；核心文字、卡片、图标组、流程节点优先放在 `Y=280-1080`。
-- 正文阶段素材核心信息集中在安全的中部偏上区域，不贴屏幕上沿，不进入中间偏下字幕区和右下 PIP 区；开头/结尾按居中强化出镜重新排版。
+- 正文阶段素材核心信息集中在安全的中部偏上区域，不贴屏幕上沿，不进入中间偏下字幕区和中间下方 PIP 区；开头/结尾按居中强化出镜重新排版。
+- 字幕位置必须避开人像：正文不进入中间下方 PIP 区，开头/结尾不压脸、嘴、手和胸口；有冲突时移动到旁侧/上方安全空位或临时缩小。
 - 相邻素材转场使用覆盖式淡入，不能闪回口播底图。
 
 ## 时间线与素材
@@ -20,4 +23,5 @@
 - 删除素材：禁用对应段落。
 - 换素材：替换素材路径。
 - 调时间：修改 start / end。
-- 调 PIP：分别修改 introHero / bodyCorner / outroHero 的 x / y / width / height / radius / duration / transitionFrames。
+- 调 PIP：分别修改 introHero / bodyBottomCenter / outroHero 的 x / y / width / height / radius / duration / transitionFrames。
+- 调字幕：修改 subtitles 的 start / end / text / position，或修改 subtitleStyle 的 baseFontSize / minFontSize / maxWidth / textShadow。
