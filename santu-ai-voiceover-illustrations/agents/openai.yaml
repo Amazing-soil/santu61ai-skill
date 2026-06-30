@@ -1,0 +1,4 @@
+interface:
+  display_name: "三土学AI黑底简笔画配图"
+  short_description: "生成并落盘带西装小人的黑底 gpt-image2 口播配图资产"
+  default_prompt: "使用 $santu-ai-voiceover-illustrations 把这篇中文文案拆成黑底简笔画配图方案，生成 gpt-image2 戴眼镜西装小人图片，保存到项目 public/media/images/，并记录真实像素尺寸和校验结果。"

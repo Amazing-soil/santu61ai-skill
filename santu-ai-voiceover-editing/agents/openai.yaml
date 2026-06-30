@@ -1,0 +1,4 @@
+interface:
+  display_name: "三土学AI黑底头像声波口播"
+  short_description: "生成三土克隆音色、黑底插画、字幕黑影安全带的竖屏口播"
+  default_prompt: "使用 $santu-ai-voiceover-editing 把这篇文案做成黑底头像声波竖屏口播：用 minimax-tts 的 SantuVoice20260618B 音色和 speech-2.8-hd 模型转语音，生成并保存 gpt-image2 西装小人插画到项目目录，记录图片真实尺寸，按平台安全区等比例轻缩留边，添加字幕黑影安全带后导出 MP4。"
