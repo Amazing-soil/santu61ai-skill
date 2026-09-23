@@ -1,334 +1,111 @@
 # Remotion Production Rules
 
-用于 AI 科技口播视频的可编辑 Remotion 工程。
+以下是中文竖屏口播的默认参数，用户指定的画幅、品牌和已有工程配置优先。实现方案可调整，真实音频对齐、人物不变形、内容不遮挡和交付完整性必须成立。
 
 ## Project Contract
 
-推荐结构：
+建议将临时工程与交付物分开，避免清理时误删成品：
 
 ```text
-task_workspace/
-├── public/media/source_talking.mp4
-├── public/media/motion/
-├── public/media/images/
-├── src/Video.tsx
-├── src/timeline.json
-├── scripts/validate-layering.mjs
-├── out/
-└── deliverables/
-    ├── final/
-    ├── images/
-    └── previews/
+project/
+  work/
+    package.json
+    public/media/source_talking.mp4
+    public/media/images/
+    public/media/motion/
+    src/index.ts
+    src/Video.tsx
+    src/timeline.json
+    out/
+  deliverables/
+    final/
+    images/
+    previews/
+    subtitles/          # 生成字幕时保留
 ```
 
-`src/timeline.json` 是可编辑入口，至少包含：
-
-- `fps`
-- `width`
-- `height`
-- `durationSeconds`
-- `source`
-- `assetTransitions`
-- `pip`
-- `subtitleStyle`（用户要求字幕时）
-- `subtitles`（用户要求字幕时）
-- `segments`
-
-`task_workspace/` 默认是临时渲染工作区，不等于最终交付物。最终交付只放入 `deliverables/`，除非用户明确要求保留可编辑工程。
+`src/timeline.json` 包含 `fps`、`width`、`height`、`durationSeconds`、`source`、`assetTransitions`、`pip`、`segments`；用户要求字幕时增加 `subtitleStyle`、`subtitles`。路径引用本地可读媒体文件，字段由实际工程解析，不假定这些文件已由 Skill 提供。
 
 ## Render Quality Defaults
 
-默认交付高码率 MP4。不要把 CRF/质量模式自动压缩出的低码率小文件当成最终版，尤其是静态图、截图、卡片素材较多时，CRF 会把文件压得很小。
+默认 `1080x1920 / 30fps / H.264`，视频目标码率 `8M`、`maxrate 10M`、`bufsize 20M`，AAC 音频至少 `128k`；复杂运动和录屏可用 `10M-12M`，相应提高 maxrate。低码率预览单独命名，不能替代用户要求的高码率成片。
 
-`1080x1920/30fps/H.264` 默认参数：
-
-- 视频目标码率：`8M`
-- `maxrate`：`10M`
-- `bufsize`：`20M`
-- 音频：AAC，`128k` 或更高
-- 快速运动、密集录屏、复杂动效较多：目标码率提高到 `10M-12M`
-
-如果 Remotion 工程直接导出的 MP4 偏小，必须做最终高码率转码，例如：
+从工程渲染时设置目标码率；如需 FFmpeg 编码，使用高质量渲染输出作为输入。例如（路径替换为本任务文件）：
 
 ```bash
-ffmpeg -y -i input.mp4 \
-  -c:v libx264 -preset slow -b:v 8M -maxrate 10M -bufsize 20M \
-  -pix_fmt yuv420p -movflags +faststart \
-  -c:a aac -b:a 128k \
-  final_hq.mp4
+ffmpeg -i input.mp4 -c:v libx264 -preset slow -b:v 8M -maxrate 10M -bufsize 20M -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 128k final_hq.mp4
 ```
 
-如果同时需要小文件预览版，命名为 `*_preview.mp4` 或 `*_low.mp4`；高码率版本必须命名清楚，例如 `*_final_hq.mp4`，并作为默认交付。
+检查实际编码参数、码率和画质。目标码率不保证实际平均码率恰好相等；单纯增大已经有损文件的码率不能恢复细节。源渲染质量不足时从工程重渲，不靠重复转码制造大文件。
 
 ## Layering
 
-工程基础必须保持三层：
+底层为原口播视频，中层为覆盖素材，上层为同一原口播视频的 PIP。PIP 不能引用素材文件；音频只播放一次，避免底层与 PIP 同时出声。
 
-1. 原口播视频底层：完整铺底。
-2. 素材覆盖层：图片、动效、说明卡。
-3. 原口播视频 PIP 层：只引用 `source_talking.mp4`。
-
-禁止把素材文件放进 PIP 层。每次修改模板后运行图层校验脚本。
-
-如果生成字幕，字幕不是素材层的一部分，推荐层级为：
-
-1. 原口播视频底层。
-2. 素材覆盖层。
-3. 字幕可读性阴影/弱遮罩层（可选，只覆盖字幕文字背后）。
-4. 字幕文本层。
-5. 原口播视频 PIP 层。
-
-PIP 层在字幕之上，是为了防止字幕误压人像；正确做法仍然是让字幕位置避开 PIP。
+如有字幕，可在素材与 PIP 之间放局部阴影和字幕文本，布局仍应让人物、字幕互不遮挡。图片与非透明背景可铺满画幅。
 
 ## Asset Layout Safe Area
 
-非图片素材包括 React/Remotion/Anime.js 动效、文字信息图、流程卡、图表、代码/窗口模拟。生成这些素材时必须预留顶部安全区：
+默认正文布局，坐标基于 `1080x1920`：
 
-- `Y=0-260`：只允许背景网格、光斑、粒子、弱装饰，不放可读文字、卡片、图标组、流程节点或主视觉。
-- `Y=280-1080`：优先放核心标题、关键图形、流程节点、图表和主要动效。
-- `Y=1080-1120`：缓冲区，只放非关键装饰，避免压到字幕安全区。
-- `Y=1120-1360`：中间偏下字幕安全区；不放必须阅读的素材内容。
-- 正文阶段中间下方 `X=330-750, Y=1280-1780`：真人 PIP 保护区；素材核心信息不得进入。若 PIP 尺寸变化，以人物框外扩 `40px` 作为保护区。
-- 开头前 `3 秒` 与结尾最后 `3 秒` 使用居中人物保护区，素材需要围绕人物重新排版；主标题优先放人物上方，短标签可放人物左右，不能压脸、胸口或字幕。
+| 区域 | 用途 |
+|---|---|
+| `Y=0-260` | 背景氛围，不放核心文字、卡片或流程节点 |
+| `Y=280-1080` | 非图片素材的主要可读信息 |
+| `Y=1080-1120` | 缓冲装饰；不放必须阅读的内容 |
+| `Y=1120-1360` | 为字幕预留，实际字幕还需避开 PIP |
+| PIP 实际框外扩 `40px` | 人像保护区；随位置和尺寸更新 |
 
-Remotion 实现时，不要让主内容容器从 `top: 0` 或 `top: 120` 开始。建议给非图片素材的主内容容器设置 `paddingTop >= 260`，或用明确的 `top: 280` / `translateY` 下移；抽帧时检查首个核心元素是否贴近上沿。
+默认正文 PIP 框是 `X=360-720, Y=1320-1800`，外扩后的保护区是 `X=320-760, Y=1280-1840`。核心素材与字幕均不得进入保护区。开头、结尾人物居中时重新安排标题、背景和短标签，避开脸、嘴、手和胸口。
 
 ## Subtitle Track
 
-用户要求字幕或烧录字幕时，必须生成可编辑字幕轨。用户提供的口播文案、旧字幕或标题稿只做语义参考；如果它们和视频里的真实语音不一致，最终字幕以音频 ASR/人工校准后的真实口述为准，脚本文案只用于辅助断句、理解上下文和发现明显错听。
+断句和文字来源以 [时间线规则](timeline-workflow.md#按需字幕) 为准。将每条字幕的 `start / end / text / position` 以及字体、位置、样式写入配置。
 
-字幕配置建议写入 `src/timeline.json`：
+默认样式：白字、`fontWeight: 900`、黑色阴影、`letterSpacing: 0`，基础字号 `58px`、最小 `42px`、容器最大宽 `760px`、行高 `1.14`。采用可配置动态字号，保证可读，不用缩字掩盖句子过长。
 
-```json
-{
-  "subtitleStyle": {
-    "enabled": true,
-    "fontWeight": 900,
-    "color": "#ffffff",
-    "textShadow": "0 3px 10px rgba(0,0,0,0.95), 0 1px 2px rgba(0,0,0,1)",
-    "baseFontSize": 58,
-    "minFontSize": 42,
-    "maxWidth": 760,
-    "lineHeight": 1.14,
-    "preferSingleLine": true
-  },
-  "subtitles": [
-    {
-      "start": 3.12,
-      "end": 5.84,
-      "text": "如果AI能让一个人干掉一个团队的活",
-      "position": "bodySafe"
-    }
-  ]
-}
-```
+Mac 字体栈优先 `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif`，字幕组件继承全局字体。黑色阴影可用 `0 3px 10px rgba(0,0,0,0.95), 0 1px 2px rgba(0,0,0,1)`。
 
-全局 CSS 字体栈优先使用 Mac 上的苹方：
-
-```css
-body {
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-}
-```
-
-字幕组件继承全局 CSS 字体栈，不在组件内另写不一致的 `fontFamily`。字幕样式固定为 `fontWeight: 900`、白字、黑色阴影、动态字号，`letterSpacing` 保持 `0`。
-
-动态字号建议：
-
-```ts
-const fontSize = Math.max(
-  subtitleStyle.minFontSize,
-  subtitleStyle.baseFontSize - Math.max(0, text.length - 14) * 1.4
-);
-```
-
-布局规则：
-
-- 字幕优先单行显示，先动态缩小字号，再按语义拆成下一条字幕，最后才允许两行。
-- 不按固定字数机械断句；按真实口播的自然句、语义短句和停顿切分。
-- 正文阶段放在中间偏下安全区时必须避开中间下方 PIP。优先使用 `Y=1080-1260` 的单行字幕，或移动到 PIP 左右侧安全空位。
-- 开头/结尾居中人物阶段，字幕不得覆盖脸、嘴、手和胸口；优先放到人物旁侧或下方安全空位，仍冲突时临时缩短或降低字号。
-- 字幕容器不能进入正文中间下方 PIP 保护区 `X=330-750, Y=1280-1780`。
+正文单行字幕可放 `Y=1120-1260`，多行或侧置时按实际边界检查；不得侵入 PIP 保护区。开头、结尾字幕放人物旁侧或空白区域，不压脸和胸口。用户未要求字幕时只留空间。
 
 ## Text Label Components
 
-正文阶段禁止继续使用“发光小矩形框包文字”的短标签组件。该样式容易像后台按钮或表单控件，和 AI 科技口播的画面叙事冲突。
+默认不用发光小矩形框包短句，以免像后台按钮。对比采用分屏对照（`SplitCompare`），步骤或标准采用编号、细线的 HUD 坐标清单（`HudCoordinateList`），也可选择同样清晰的表达。
 
-Remotion 模板应优先提供两类文本组件：
-
-### SplitCompare
-
-用于对比和反常识：
-
-- 普通人 vs 超级个体
-- 旧方式 vs 新方式
-- 不是 A，而是 B
-- 效率差距、认知差距、流程差距
-
-实现建议：
-
-- 左右或上下两栏，不使用卡片框；中间只用细线、光束、弱分割。
-- 旧方式降亮、弱化或划线；新方式优先用琥珀金或冷蓝高亮，只有 AI 识别、扫描、信号、增长语义才少量使用信号绿。
-- 每侧只放 `1` 个身份词 + `1` 个动作词，避免长句。
-- 核心文字放在 `Y=280-1080`，中间下方 PIP 区保持干净。
-
-### HudCoordinateList
-
-用于步骤、特征、判断标准和执行顺序：
-
-- `01 / 先给AI跑`
-- `02 / 自己判断`
-- `03 / 再做修正`
-
-实现建议：
-
-- 使用编号、1px 细线、坐标点、弱扫描光，不包矩形框。
-- 每屏最多 `3-4` 条，单条 `2-6` 个汉字为宜。
-- 坐标清单不要进入 `Y=1120-1360` 字幕区，不压中间下方 PIP。
-- 如果内容超过容量，拆成下一段或删字，不缩成一堆小字。
+分屏每侧宜一个身份词和一个动作词；清单每屏宜 3–4 条，每条 2–6 个汉字。内容过多则拆屏，不挤成小字。以琥珀金或冷蓝强调主信息，弱化次要信息。
 
 ## Color System
 
-Remotion 模板必须先定义可替换的色彩系统，不要把绿色写成全局默认。
+色彩参数集中配置，默认：背景 `#05070d`、正文 `#f7fbff`、次要文字 `#9fb2c7`、琥珀金 `#f6d365`、冷蓝 `#69a8ff`、信号绿 `#1de58c`、警示红 `#ff565d`。
 
-默认推荐：
-
-```ts
-const palette = {
-  bg: "#05070d",
-  text: "#f7fbff",
-  muted: "#9fb2c7",
-  amber: "#f6d365",
-  blue: "#69a8ff",
-  signalGreen: "#1de58c",
-  danger: "#ff565d",
-};
-```
-
-规则：
-
-- 背景以深炭黑/近黑为主，正文用冷白，主强调优先用琥珀金或冷蓝。
-- `signalGreen` 只用于 AI 识别、扫描、信号、增长、雷达、激活等语义，建议占画面高亮面积约 `10%-20%`。
-- 不要让 `blue`、`warm` 等 tone 的 fallback 仍然返回绿色 RGB；每个 tone 必须有真实不同的主色。
-- 不要让背景、标题、粒子、描边、进度条、图片提示词同时使用绿色，否则整条视频会变成单一青绿色科技风。
-- 如果用户有品牌色或行业色，品牌色优先；没有品牌色时使用上述默认体系。
+绿色用于扫描、信号、增长等语义，宜占高亮面积约 10%–20%；不要把背景、标题、粒子和图片同时做成青绿。不同 tone 的回退色也应不同。品牌色按用户指定执行。
 
 ## Dynamic PIP Defaults
 
-默认使用三阶段动态 PIP：
+| 阶段 | 位置与大小 | 内容 |
+|---|---|---|
+| `introHero` | `x=190, y=560, width=700, height=900, radius=42` | 开头约 3 秒，保留钩子背景和少量辅助信息 |
+| `bodyBottomCenter` | `x=360, y=1320, width=360, height=480, radius=34` | 正文口播；边框默认 `4px rgba(255,255,255,0.72)` |
+| `outroHero` | 与 introHero 相同 | 结尾约 3 秒，保留结论或提问背景 |
 
-1. `introHero`：开头前 `3 秒`，人物居中放大，但不全屏；背景继续展示钩子素材，人物周围可放 `2-4` 个短标签或一条钩子标题。
-2. `bodyBottomCenter`：正文阶段，人物平滑缩小并移动到中间下方。
-3. `outroHero`：最后 `3 秒`，人物平滑回到中央；背景继续展示结论素材，人物周围可放结论词、适用场景或提问辅助信息。
-
-如果开头钩子或结尾收束的真实口播段不足 `3 秒`，使用真实时间线边界，不强行占满。居中强化出镜不能只剩人物，也不要直接使用全屏原口播。
-
-推荐配置：
-
-```json
-{
-  "pip": {
-    "introHero": {"duration": 3, "x": 190, "y": 560, "width": 700, "height": 900, "radius": 42},
-    "bodyBottomCenter": {"x": 360, "y": 1320, "width": 360, "height": 480, "radius": 34},
-    "outroHero": {"duration": 3, "x": 190, "y": 560, "width": 700, "height": 900, "radius": 42},
-    "transitionFrames": 20
-  }
-}
-```
-
-正文中间下方 PIP：
-
-```json
-{
-  "enabled": true,
-  "x": 360,
-  "y": 1320,
-  "width": 360,
-  "height": 480,
-  "radius": 34,
-  "borderWidth": 4,
-  "borderColor": "rgba(255,255,255,0.72)"
-}
-```
-
-规则：
-
-- 开头和结尾居中人物建议占画面宽度约 `52%-68%`，保留背景素材和辅助信息，不做全屏纯人像。
-- 居中人物周围的辅助信息必须短：最多一条主钩子/结论和 `2-4` 个短标签，不用满屏小字。
-- 从居中到中间下方、从中间下方到居中的位移、尺寸和圆角变化必须连续插值，不能硬切。
-- 近似 `3:4`，用 `object-fit: cover` 等比例裁切。
-- 位置压低到中间下方，字幕和素材应主动避开人物框。
-- 不直接缩小 `9:16` 原视频。
-- 上下可小范围裁剪，不能横向或纵向拉伸人像。
+默认 `transitionFrames=20`，连续插值位置、大小和圆角；采用等比例裁切，不把原 `9:16` 视频拉伸。开头和结尾的真实边界短于 3 秒时缩短；人物与核心文字互不遮挡，不默认切成全屏纯人像。
 
 ## Asset Transitions
 
-相邻素材使用覆盖式淡入：
+相邻素材使用覆盖式淡入：上一层保持不透明，下一层在其上淡入；避免双透明交叉淡化露出口播底图。默认 `crossfadeFrames=10`，空档不超过 `bridgeMaxGapSeconds=2` 时可桥接。
 
-- 上一段素材保持 `opacity: 1` 到下一段开始覆盖。
-- 下一段素材在上层淡入。
-- 不做两段同时半透明的传统 crossfade，因为会漏出口播底图。
-
-推荐配置：
-
-```json
-{
-  "assetTransitions": {
-    "crossfadeFrames": 10,
-    "bridgeMaxGapSeconds": 2
-  }
-}
-```
-
-如果相邻素材之间空档小于等于 `bridgeMaxGapSeconds`，素材层应桥接空档，避免闪回原口播背景。
-
-## Motion Playback
-
-- `assetDuration` 存素材原始时长。
-- 按口播段落时长计算 `playbackRate`，让素材尽量完整播放。
-- 如果段落短到动效无法看懂，禁用该段素材或改成静态图。
+按素材原始时长 `assetDuration` 和口播段时长计算 `playbackRate`；素材太长或太短时简化、换静态图或禁用，不强塞播不完的内容。
 
 ## Deliverables And Cleanup
 
-成片验证通过后，把需要保留的文件复制到 `deliverables/`：
+成片通过 [验收](quality-checks.md) 后，将最终 MP4、实际使用图片和验收图分别放入 `deliverables/final/`、`images/`、`previews/`；有字幕时将可编辑的字幕和样式数据另存 `subtitles/`。交接工程时保留 timeline、依赖配置、说明和所需全部素材。
 
-- `deliverables/final/`：最终高码率 MP4。
-- `deliverables/images/`：本次实际使用或生成的 AI 图片、封面图、手绘/设计图片。不要保留未使用候选图，除非用户要求。
-- `deliverables/previews/`：关键帧检查图、封面预览、对齐检查图、contact sheet。
+清理按 [运行环境与清理策略](runtime-cleanup-policy.md) 执行。`bundle-*`、测试导出和验收中间视频在交付后立即清理；能加速近期修改的渲染分段默认保留 7 天，必要时延长至 14 天。共用 Node/Python 环境、转写模型、包管理器缓存、系统 FFmpeg/Chrome 以及已安装的其他 Skill 不属于单个项目，不随本项目清理。
 
-默认清理当前任务生成的中间文件：
-
-- `node_modules/`、`.cache/`、`dist/`、`build/`、Remotion 临时 bundle。
-- `out/` 中的测试导出、中间 MP4/MOV、低码率预览、失败重试产物。
-- 临时音频、ASR 草稿、分散抽帧、未使用图片候选。
-
-不要清理：
-
-- 用户提供的原始口播视频和素材。
-- 其他任务正在渲染的目录。
-- 同级未知工程目录或历史交付物。
-- 用户明确要求保留的可编辑工程。
-
-清理顺序：
-
-1. 确认最终 MP4 已进入 `deliverables/final/`。
-2. 确认实际使用的图片素材已进入 `deliverables/images/`。
-3. 确认预览检查图已进入 `deliverables/previews/`。
-4. 再删除当前任务临时工作区中的中间文件。
+清理前确认交付物没有指向待删除文件，并统计清理前后占用。不得清理源视频、用户素材、工程源码、时间线、依赖配置、工程实际引用的媒体、最终交付物、必要验收记录、其他任务、未知目录或用户要求保留的文件。验收失败或必要素材尚未导出时保留排查现场。
 
 ## Validation
 
-至少运行：
+读取实际 `package.json`，运行与改动有关、确实存在的检查命令。Skill 不附带 `validate-layering` 脚本，不假定工程有同名 npm 命令；已有检查可复用，否则通过时间线检查与最终渲染验证源视频引用、图层、音轨和遮挡。TypeScript 工程有配置时运行其类型检查。
 
-```bash
-npm run validate-layering
-npx tsc --noEmit
-```
-
-必要时抽帧：
-
-```bash
-npx remotion still src/index.ts CompositionId out/check.png --frame=159
-```
-
-导出后再从最终 MP4 抽过渡帧，确认成片没有闪屏。
+导出后从最终 MP4 抽取关键与转场帧，检查码率、时长、尺寸、帧率、音轨和播放效果，按 [验收清单](quality-checks.md) 记录实际结果。

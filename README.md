@@ -6,7 +6,7 @@
 
 | Skill | 用途 | 语言 |
 |---|---|---|
-| [ai-tech-video-production](./ai-tech-video-production/) | 把中文 AI 科技口播视频和文案制作成可编辑 Remotion 工程与最终 MP4 | 中文 |
+| [ai-tech-video-production](./ai-tech-video-production/) | 将已剪好的中文 AI 科技口播制作成 MP4，按需交付字幕和可编辑工程 | 中文 |
 | [santu-ai-voiceover-editing](./santu-ai-voiceover-editing/) | 把中文文案做成“三土学AI”黑底头像声波竖屏口播，包含 MiniMax TTS、黑底插画、字幕安全带、Remotion 成片和封面 | 中文 |
 | [santu-ai-voiceover-illustrations](./santu-ai-voiceover-illustrations/) | 把中文 AI/商业文案拆成黑底 gpt-image2 西装小人简笔画素材方案，并要求图片落盘和记录真实像素 | 中文 |
 
@@ -62,8 +62,9 @@ ln -s ~/santu61ai-skill/santu-ai-voiceover-illustrations ~/.codex/skills/santu-a
 在支持 skills 的 Agent 中直接点名调用：
 
 ```text
-Use $ai-tech-video-production to turn my talking-head video and script
-into an editable Remotion project and final MP4.
+使用 $ai-tech-video-production 将这条已剪好的中文 AI 科技口播视频制作成竖屏 MP4。
+口播视频：/path/to/talking-head.mp4
+如需字幕或可编辑工程，请在请求中写明。
 ```
 
 黑底头像声波口播：

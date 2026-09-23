@@ -1,7 +1,7 @@
 interface:
   display_name: "AI 科技口播视频生产"
-  short_description: "混合素材口播成片与干净交付"
+  short_description: "按真实口播制作混合素材视频，支持按需字幕、成片验收与工程交接"
   brand_color: "#1DE58C"
-  default_prompt: "Use $ai-tech-video-production to turn my Chinese AI talking-head video and script into a final MP4 with mixed AI images, React motion, aligned subtitles, previews, and clean deliverables."
+  default_prompt: "Use $ai-tech-video-production to turn my Chinese AI talking-head video and script into a final MP4 with suitable mixed assets and verified previews; add aligned editable subtitles only when requested."
 policy:
   allow_implicit_invocation: true
