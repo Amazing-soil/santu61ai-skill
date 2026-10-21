@@ -1,0 +1,4 @@
+interface:
+  display_name: "抖音链接与文案提取"
+  short_description: "解析抖音链接，下载媒体并提取基本信息、发布文案和校正版口播"
+  default_prompt: "使用 $douyin-copy-extractor 提取这条抖音分享链接的基本信息、发布文案和校正版口播。"

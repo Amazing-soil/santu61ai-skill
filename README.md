@@ -6,6 +6,7 @@
 
 | Skill | 用途 | 语言 |
 |---|---|---|
+| [douyin-copy-extractor](./douyin-copy-extractor/) | 提取抖音作品信息、发布文案和经校对的完整口播，按需保留媒体；需要 GPU | 中文 |
 | [ai-tech-video-production](./ai-tech-video-production/) | 将已剪好的中文 AI 科技口播制作成 MP4，按需交付字幕和可编辑工程 | 中文 |
 | [santu-ai-voiceover-editing](./santu-ai-voiceover-editing/) | 把中文文案做成“三土学AI”黑底头像声波竖屏口播，包含 MiniMax TTS、黑底插画、字幕安全带、Remotion 成片和封面 | 中文 |
 | [santu-ai-voiceover-illustrations](./santu-ai-voiceover-illustrations/) | 把中文 AI/商业文案拆成黑底 gpt-image2 西装小人简笔画素材方案，并要求图片落盘和记录真实像素 | 中文 |
