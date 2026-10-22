@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>章节页与真人切换示例</title>
+<style>body{background:#101615;color:#f2eadb;font:16px/1.6 system-ui;margin:24px}main{max-width:1080px;margin:auto}button,input,a{font:inherit}button{background:#20352a;color:inherit;border:1px solid #62766a;border-radius:6px;padding:8px 16px}#stage{width:100%;max-height:none;margin:20px auto}body.portrait #stage{max-width:405px}nav{display:flex;gap:12px;flex-wrap:wrap}input[type=range]{width:100%}a{color:#a8ddc3}#message{color:#d6b893}</style>
+<main><h1>章节页与真人切换</h1><p>10 秒组件示例。选择一条不少于 10 秒的本地口播即可预览；文件只在本机读取。</p><nav><a href="?layout=landscape">横版</a><a href="?layout=portrait">竖版</a><input id="file" type="file" accept="video/*"><button id="play">播放</button><button id="pause">暂停</button></nav><p id="message">尚未选择口播；可以拖动时间查看章节页和图示。</p><div id="stage"></div><input id="seek" type="range" min="0" max="299" value="0"><output id="state"></output></main>
+<script type="module">
+import {createPlayer} from './player.mjs';import {exampleConfig,exampleContent} from './example.mjs';
+const portrait=new URLSearchParams(location.search).get('layout')==='portrait';document.body.classList.toggle('portrait',portrait);
+const p=createPlayer(document.querySelector('#stage'),exampleConfig(portrait),{renderContent:exampleContent});window.demo=p;window.demoReady=false;
+let blobURL;const message=document.querySelector('#message');
+const report=e=>{message.textContent=e.message;console.error(e);};
+document.querySelector('#file').onchange=async e=>{try{const next=URL.createObjectURL(e.target.files[0]);await p.setSource(next);if(blobURL)URL.revokeObjectURL(blobURL);blobURL=next;message.textContent='原片是唯一声音来源；章节和全屏内容期间人物隐藏，时钟继续。';}catch(e){report(e);}};
+document.querySelector('#play').onclick=()=>p.play().catch(report);document.querySelector('#pause').onclick=()=>p.pause();
+const slider=document.querySelector('#seek');slider.onchange=()=>p.seek(Number(slider.value)).catch(report);
+function update(){const s=p.getState();if(!s.paused)slider.value=s.frame;document.querySelector('#state').textContent=`${(s.frame/30).toFixed(2)} 秒 · ${s.segment.mode} · 真人${s.host.visible?'显示':'隐藏'}`;requestAnimationFrame(update)}update();
+await p.ready;window.demoReady=true;
+</script></html>

@@ -7,7 +7,10 @@
 | Skill | 用途 | 语言 |
 |---|---|---|
 | [douyin-copy-extractor](./douyin-copy-extractor/) | 提取抖音作品信息、发布文案和经校对的完整口播，按需保留媒体；需要 GPU | 中文 |
-| [ai-tech-video-production](./ai-tech-video-production/) | 将已剪好的中文 AI 科技口播制作成 MP4，按需交付字幕和可编辑工程 | 中文 |
+| [ai-tech-video-production](./ai-tech-video-production/) | 将已剪好的中文 AI 科技口播制作成横竖版 MP4，支持全屏章节页、真人显示切换、按需字幕和可编辑工程 | 中文 |
+| [ai-tech-video-assets](./ai-tech-video-assets/) | 规划或制作口播图片、HTML 动效和实操素材，提供素材表与剪辑交接说明 | 中文 |
+| [video-use](./video-use/) | 原始视频转写、精剪与剪后时间线交接，内置 manim-video | 英文 |
+| [video-talkcraft](./video-talkcraft/) | 按需提供口播分镜、动效卡、转场与组件；遵循独立许可 | 中文 / 英文 |
 | [santu-ai-voiceover-editing](./santu-ai-voiceover-editing/) | 把中文文案做成“三土学AI”黑底头像声波竖屏口播，包含 MiniMax TTS、黑底插画、字幕安全带、Remotion 成片和封面 | 中文 |
 | [santu-ai-voiceover-illustrations](./santu-ai-voiceover-illustrations/) | 把中文 AI/商业文案拆成黑底 gpt-image2 西装小人简笔画素材方案，并要求图片落盘和记录真实像素 | 中文 |
 
@@ -28,6 +31,8 @@ santu61ai-skill/
 每个 skill 的核心说明位于对应目录的 `SKILL.md`，其余目录按需提供 Agent 配置、参考规则、模板或脚本。
 
 ## 安装
+
+中文 AI 科技口播的关联技能、安装步骤和调用关系见 [视频制作与关联技能](VIDEO_WORKFLOW.md)。
 
 ### 安装单个 Skill
 
@@ -100,4 +105,4 @@ ln -s ~/santu61ai-skill/santu-ai-voiceover-illustrations ~/.codex/skills/santu-a
 
 ## License
 
-[MIT](./LICENSE)
+三土维护的原创内容采用 [MIT](./LICENSE)。`video-use/` 保留原作者 MIT 声明；`video-talkcraft/` 使用 [PolyForm Noncommercial](video-talkcraft/LICENSE)，其许可注明商业使用需要作者事先授权。各目录内的第三方内容按其原许可分发，详见 [第三方来源与许可](THIRD_PARTY_NOTICES.md)。

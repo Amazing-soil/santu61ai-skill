@@ -5,8 +5,9 @@
 - 原始口播文件：
 - 工程与可编辑入口：
 - 成片路径、画幅、帧率、编码：
-- PIP 各阶段位置、尺寸、时间和保护区：
+- 各段画面模式、真人显示/隐藏、位置、尺寸、时间和保护区：
 - 字幕来源、断句、位置、字体与可编辑数据路径（如有）：
+- 章节页与真人回归的时间范围（原时钟持续）：
 - 视觉方案与转场：
 
 ## 时间线与素材
@@ -16,7 +17,7 @@
 
 ## 修改入口
 
-在实际工程配置中标明：素材的 enabled 与 asset；时间的 start / end；PIP 的 introHero / bodyBottomCenter / outroHero；字幕的 subtitles 与 subtitleStyle。填写本次实际参数，保持交接文件自包含。
+在实际工程配置中标明：素材的 enabled 与 asset；时间的 start / end；画面 mode、章节 index/title、真人 visible/rect；字幕的 subtitles 与 subtitleStyle。填写本次实际参数，保持交接文件自包含。
 
 ## 验收与保留
 
