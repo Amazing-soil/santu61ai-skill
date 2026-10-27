@@ -5,6 +5,11 @@ description: 为中文 AI 科技口播规划或制作图片、HTML 动效和实�
 
 # AI Tech Video Assets
 
+## Claude Code
+
+在 Claude 中使用 Bash、Read、Write/Edit 操作本地素材，执行方式见 [Claude 运行说明](../ai-tech-video-production/references/claude-code.md)。需要 GPT Image 2 图片时读取已安装的 [codex-imagegen](../codex-imagegen/SKILL.md)，调用本地 Codex 内置生图并检查实际图片；不要在 Claude 中索要图片 API Key 或改用第三方 router。
+
+
 将口播文案或真实口播转为可执行的素材方案；用户要求生成素材时继续完成文件与预览验收。只要规划表时交付规划表，不扩大为整片剪辑。
 
 ## 核心约定

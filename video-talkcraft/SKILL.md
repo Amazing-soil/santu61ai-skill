@@ -5,6 +5,11 @@ description: 终极口播视频 skill：中文口播稿 + 成品配音 → CPU �
 
 # video-talkcraft — 口播视频 skill
 
+## Claude Code 运行
+
+通过 Claude 的 Bash 执行本机 Python、Node、FFmpeg 和渲染命令，Read 查看脚本、截图与实际输出，Write/Edit 修改本片工程；技能目录从本 SKILL.md 的真实路径解析。需要 GPT Image 2 素材时读取已安装的 [codex-imagegen](../codex-imagegen/SKILL.md)，让本地 Codex 使用内置 `image_gen` 生图并交回 PNG，不在 Claude 中直接调用 Codex 工具或图片 API。独立评审按本技能已有跨 Agent 协议执行。作为 `ai-tech-video-production` 的组件来源时，优先遵守主技能接入说明，保持同一时间线、原音轨、字幕和布局。
+
+
 三大来源合体：**管线**（配音→字级时间戳→Remotion）+ **词汇**（108 张动效配方卡，全配可播 demo + 自包含 tsx）+ **镜头**（七层模型反 PPT 系统）+ **视觉语言**（Apple 范式默认版）。
 
 核心范式：解说词驱动画面，每句都要有**活的画面响应**（相机极缓推拉/已有元素的变化），

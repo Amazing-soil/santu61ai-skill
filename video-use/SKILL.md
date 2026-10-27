@@ -5,6 +5,11 @@ description: Edit any video by conversation. Transcribe, cut, color grade, gener
 
 # Video Use
 
+## Claude Code integration
+
+Resolve helpers relative to this SKILL.md, including when installed via symlink. Use Claude's Bash for local commands, Read for source files and image inspection, and Write/Edit for project changes. For GPT Image 2 assets, read the installed [codex-imagegen skill](../codex-imagegen/SKILL.md): Claude delegates only image generation to the local Codex CLI, then verifies the saved image. Do not call Codex-only tool names from Claude. When this skill hands a trimmed talking head to `ai-tech-video-production`, follow that main skill's scope and shared audio/timeline rules.
+
+
 ## Principle
 
 1. **LLM reasons from raw transcript + on-demand visuals.** The only derived artifact that earns its keep is a packed phrase-level transcript (`takes_packed.md`). Everything else — filler tagging, retake detection, shot classification, emphasis scoring — you derive at decision time.

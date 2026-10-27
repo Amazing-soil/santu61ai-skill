@@ -7,9 +7,11 @@
 | Skill | 用途 | 语言 |
 |---|---|---|
 | [douyin-copy-extractor](./douyin-copy-extractor/) | 提取抖音作品信息、发布文案和经校对的完整口播，按需保留媒体；需要 GPU | 中文 |
+| [bayarea-follow-reading](./bayarea-follow-reading/) | 提取跟读文案、重点字、音频和右侧素材，接收数字人视频后按湾区固定模板合成成片 | 中文 |
 | [ai-tech-video-production](./ai-tech-video-production/) | 将已剪好的中文 AI 科技口播制作成横竖版 MP4，支持全屏章节页、真人显示切换、按需字幕和可编辑工程 | 中文 |
 | [ai-tech-video-assets](./ai-tech-video-assets/) | 规划或制作口播图片、HTML 动效和实操素材，提供素材表与剪辑交接说明 | 中文 |
 | [video-use](./video-use/) | 原始视频转写、精剪与剪后时间线交接，内置 manim-video | 英文 |
+| [codex-imagegen](./codex-imagegen/) | Claude 通过本地 Codex 内置 GPT Image 2 生成图片并交接本地 PNG | 中文 |
 | [video-talkcraft](./video-talkcraft/) | 按需提供口播分镜、动效卡、转场与组件；遵循独立许可 | 中文 / 英文 |
 | [santu-ai-voiceover-editing](./santu-ai-voiceover-editing/) | 把中文文案做成“三土学AI”黑底头像声波竖屏口播，包含 MiniMax TTS、黑底插画、字幕安全带、Remotion 成片和封面 | 中文 |
 | [santu-ai-voiceover-illustrations](./santu-ai-voiceover-illustrations/) | 把中文 AI/商业文案拆成黑底 gpt-image2 西装小人简笔画素材方案，并要求图片落盘和记录真实像素 | 中文 |
@@ -50,6 +52,17 @@ mkdir -p ~/.codex/skills
 cp -R santu61ai-skill/santu-ai-voiceover-editing ~/.codex/skills/
 cp -R santu61ai-skill/santu-ai-voiceover-illustrations ~/.codex/skills/
 ```
+
+### 每日跟读视频
+
+同时安装 `bayarea-follow-reading` 与 `douyin-copy-extractor` 两个完整目录。前者负责素材归档、数字人回传和成片，后者负责抖音下载与 GPU 转写。使用说明见 [跟读制作 skill](bayarea-follow-reading/SKILL.md)。
+
+```text
+使用 $bayarea-follow-reading 处理这些抖音链接，准备跟读素材和数字人驱动音频。
+使用 $bayarea-follow-reading 将回传的 GD-001 数字人视频匹配归档，并生成完整跟读视频。
+```
+
+数字人目前由用户手动制作；固定背景、蓝色重点字和人物完整缩放由随包脚本完成。Python、FFmpeg 和 MiSans 字体按技能中的运行条件准备。
 
 ### 使用软链接
 

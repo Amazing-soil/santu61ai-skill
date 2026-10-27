@@ -48,27 +48,40 @@ HTML/SVG 可使用 [随包组件](composition-components.md)，Remotion 可读�
 
 ## Asset Layout Safe Area
 
-以下仅为竖版 `split` 的一种布局，坐标基于 `1080x1920`；全屏章节、全屏内容、横版与自定义布局使用各自保护区：
+以下是竖版 `1080x1920` 的默认版式（用户确认过的标准），全屏章节、横版与自定义布局使用各自保护区：
 
 | 区域 | 用途 |
 |---|---|
-| `Y=0-260` | 背景氛围，不放核心文字、卡片或流程节点 |
-| `Y=280-1080` | 非图片素材的主要可读信息 |
-| `Y=1080-1120` | 缓冲装饰；不放必须阅读的内容 |
-| `Y=1120-1360` | 为字幕预留，实际字幕还需避开 PIP |
-| PIP 实际框外扩 `40px` | 人像保护区；随位置和尺寸更新 |
+| `Y=0-110` | 背景氛围，不放核心文字 |
+| `Y=120-1170` | 正文内容区：标题、截图、图示、标签 |
+| `Y=1192-1304` | 字幕区，全片固定在中间偏下，便于短视频平台观看；不放最底部 |
+| `X=380-700, Y=1350-1730` | 正文人物小窗（`320x380`，圆角约 26），居中在字幕下方 |
+| `X>=940, Y=900-1650` | 平台右侧点赞/评论按钮区，不放小窗和核心信息 |
 
-这套旧式竖版分屏示例的 PIP 框是 `X=360-720, Y=1320-1800`，外扩后的保护区是 `X=320-760, Y=1280-1840`。核心素材与字幕均不得进入保护区。选择居中人物布局时重新安排标题、背景和短标签，避开脸、嘴、手和胸口。
+小窗外扩 `30px` 为人像保护区，核心素材与字幕不得进入。小窗要小：正文段人物不是重点，内容区才是。开头结尾的人物居中卡见 [Host Layout](#host-layout)。
 
 ## Subtitle Track
 
-断句和文字来源以 [时间线规则](timeline-workflow.md#按需字幕) 为准。将每条字幕的 `start / end / text / position` 以及字体、位置、样式写入配置。
+断句和文字来源以 [时间线规则](timeline-workflow.md#按需字幕) 为准。将每条字幕的 `start / end / text / hl`（需高亮的关键词）以及字体、位置、样式写入配置。
 
-默认样式：白字、`fontWeight: 900`、黑色阴影、`letterSpacing: 0`，基础字号 `58px`、最小 `42px`、容器最大宽 `760px`、行高 `1.14`。采用可配置动态字号，保证可读，不用缩字掩盖句子过长。
+默认样式（有网感、科技博主常用）：
 
-Mac 字体栈优先 `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif`，字幕组件继承全局字体。黑色阴影可用 `0 3px 10px rgba(0,0,0,0.95), 0 1px 2px rgba(0,0,0,1)`。
+- 字体：**抖音美好体 DouyinSansBold**（字节官方 `bytedance/fonts` 仓库，SIL OFL 1.1，可免费商用）。共用副本放 `~/.local/share/ai-tech-video-production/fonts/DouyinSansBold.ttf` 与 `DouyinSans-OFL.txt`；缺失时从 `https://cdn.jsdelivr.net/gh/bytedance/fonts@main/DouyinSans/DouyinSansBold.ttf` 获取并保留许可文件。不要退回 PingFang 等系统黑体当字幕字体。
+- 白字，`7px` 黑色外描边 + `0 6px 14px rgba(0,0,0,.6)` 投影。描边用 16 方向 `text-shadow` 模拟，不用 `-webkit-text-stroke`（会吃进笔画）。
+- 每条 1–2 个关键词用黄色 `#ffe14d` 高亮：数字、价格、产品名、核心动作或结论词。
+- 基础字号 `66px`，最小 `46px`，最大宽 `980px`，行高 `1.12`，字距 `1px`；按字符宽度动态缩字，仍过长则按语义拆条。
+- 每条字幕 4 帧轻弹入（scale `0.88→1`），不做花哨逐字动画。
+- 位置：竖版全片固定 `Y=1192-1304` 居中，不随段落跳动；人物居中卡、内容区和小窗都按这条带让位。
 
-正文单行字幕可放 `Y=1120-1260`，多行或侧置时按实际边界检查；不得侵入 PIP 保护区。开头、结尾字幕放人物旁侧或空白区域，不压脸和胸口。用户未要求字幕时只留空间。
+开头结尾大字、章节标题可同用该字体保持统一；正文说明文字仍用系统黑体。
+
+### 字体加载（Remotion）
+
+在 Remotion 并发渲染中，用 `FontFace(url)` + `delayRender` 异步加载会在后台标签页卡死超时（实测 28s/58s 均超时，单帧 still 却正常）。可靠做法：
+
+1. 用 [scripts/subset_font.py](../scripts/subset_font.py) 按本片用字子集化为 woff2 并生成 base64 模块（DouyinSansBold 自带的 GSUB 表损坏，脚本会丢弃 GSUB/GPOS/GDEF，中文字幕不受影响）。
+2. 在模块顶层用二进制构造并立即注册：`new FontFace('Douyin Sans', bytes.buffer, {weight:'700'})` → `document.fonts.add()`；仅当 `status !== 'loaded'` 时才 `delayRender` 等待。
+3. 改字幕文字后重新运行子集化，否则新字会回退到系统字体。渲染后抽帧特写字幕确认字形。
 
 ## Text Label Components
 
@@ -84,7 +97,14 @@ Mac 字体栈优先 `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto
 
 ## Host Layout
 
-先选择 `host/split/chapter/content`，再计算人物和内容区域。随包 `layout()` 提供 1080×1920 与 1920×1080 的原生起点，也接受等比例其他尺寸；`host.rect` 可覆盖具体位置。构图按素材、脸部与手势调整，不把示例位置固定为所有视频的标准。
+先选择 `host/split/chapter/content`，再计算人物和内容区域。
+
+竖版默认（用户确认过的标准）：
+
+- **开头、结尾 `host`**：人物居中缩放卡 `X=140, Y=280, 800x900`（圆角约 40），不用全屏人物。重点大字放卡片上方（`Y≈70-260`）和字幕带下方（`Y≈1390-1550`），字幕在卡片和下方大字之间。
+- **正文 `split`**：内容区在上，人物小窗 `320x380` 居中在字幕下方。讲解、截图、指令卡、对比等正文段默认都带小窗，避免画面空；`content` 全屏隐藏人物只用于确需整屏的复杂图示。章节页仍隐藏人物。
+- **居中卡 ↔ 小窗**：在两个位置原位交叉淡化约 10 帧（同一源视频时刻渲染两层画面，只改透明度），不做位置插值，避免人物划过字幕带遮住字幕。
+- 卡片内 cover 裁切时让脸部（源画面约 `y=380-1240`）落在框中部：`offsetY = clamp(h/2 - 790*scale, h - vh, 0)`。随包 `layout()` 提供 1080×1920 与 1920×1080 的原生起点，也接受等比例其他尺寸；`host.rect` 可覆盖具体位置。构图按素材、脸部与手势调整，不把示例位置固定为所有视频的标准。
 
 - 真人讲述可适当放大，正文配图可缩小或移动；使用原素材等比例裁切，不拉伸。
 - 两个连续可见的人物段可平滑插值位置和大小；全屏章节与全屏内容必须完全隐藏真人。
@@ -97,6 +117,28 @@ Mac 字体栈优先 `"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto
 相邻素材使用覆盖式淡入：上一层保持不透明，下一层在其上淡入；避免双透明交叉淡化露出口播底图。默认 `crossfadeFrames=10`，空档不超过 `bridgeMaxGapSeconds=2` 时可桥接。
 
 外部无声素材可按原始时长与口播段时长调整播放速度；原口播视频和音频不得使用这一变速规则。素材太长或太短时简化、换静态图或禁用，不强塞播不完的内容。
+
+## Sound Effects
+
+默认在画面卡点加音效，节奏感来自"画面动作 + 对应声音"，不是堆数量。一条 30–40 秒口播约 25–35 个点位。
+
+| 画面动作 | 音效（huashu-design 音效库） | 增益起点 |
+|---|---|---|
+| 钩子数字落下、章节大标题 | `impact/drop-thud` | -12 ~ -14 |
+| 印章/结论盖章、结尾大字 | `impact/brand-stamp` | -9 ~ -12 |
+| 切段、全屏页覆盖进入 | `transition/whoosh-fast`、`swipe-horizontal`、`whoosh`、`dissolve` | -14 ~ -17 |
+| 标签/芯片弹出 | `feedback/notification-pop` | -14 ~ -15 |
+| 流程节点逐个出现、复制按钮、截图强调框 | `ui/click-soft`、`ui/click` | -14 ~ -17 |
+| 关键字段高亮 | `magic/sparkle` | -15 |
+| 填写/输入 | `keyboard/type` | -15 |
+| 自动配置进行中 / 完成 | `magic/ai-process`（-20）/ `progress/complete-done` | -19 |
+| 划掉旧做法 | `keyboard/delete-key` | -14 ~ -19 |
+| 关键数字结果、达成 | `feedback/achievement`、`feedback/success-chime` | -19 ~ -21 |
+
+- 音效库：`~/.agents/skills/huashu-design/assets/sfx/<分类>/<名>.mp3`（ElevenLabs 生成，说明见该技能 `references/sfx-library.md`）。用到的文件复制进工程 `public/sfx/`，在 `timeline.json` 的 `sfx` 写 `{t, file, gainDb}`，`t` 与画面动作同一帧。
+- 混音用 [scripts/mix_sfx.py](../scripts/mix_sfx.py)：每个音效先按峰值归一到 -1 dB，再加 `gainDb`；人声电平不变；`amix normalize=0` + `alimiter`；视频流 copy，音频 AAC 192k。调音效只需重混音，不重渲画面。
+- 验收：用成片减原声得到音效残差，逐点比较 0.3 s 窗口内音效与人声电平。说话中的点位音效应低于人声约 3 dB 以上；盖住数字、产品名、结论词的必须降。停顿中的转场、钩子印章可与人声持平。工具无法听音时如实说明只做了电平核对，请用户试听。
+- 不在每个字幕切换处都加音效；同一类音效连续出现时降低增益或隔一个点位。
 
 ## Deliverables And Cleanup
 

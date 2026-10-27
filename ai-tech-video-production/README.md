@@ -17,6 +17,8 @@ $ai-tech-video-production
 
 成片制作需要可用的转写方法、浏览器/Node.js 或 Remotion，以及 FFmpeg 或等价工具。图片生成工具可选，无法取得本地图片文件时可用已有图片、录屏或动效。安装 Skill 目录不会自动安装运行依赖。
 
+Claude Code 的工具对应与生图路线见 [Claude 运行说明](references/claude-code.md)。GPT Image 2 图片通过 [codex-imagegen](../codex-imagegen/SKILL.md) 调用本地 Codex 生成。
+
 执行约定与默认交付见 [SKILL.md](SKILL.md)。按任务读取：
 
 - [可运行章节页、基础运动函数和真人切换组件](references/composition-components.md)

@@ -9,3 +9,7 @@ dist/
 *.mp3
 *.env
 tmp/
+
+__pycache__/
+
+*.py[cod]

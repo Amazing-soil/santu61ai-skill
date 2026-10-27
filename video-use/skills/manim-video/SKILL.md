@@ -7,6 +7,11 @@ metadata:
 
 # Manim Video Production Pipeline
 
+## Claude Code integration
+
+Use Bash for the local Python/Manim/FFmpeg pipeline, Read to inspect sources and rendered frames, and Write/Edit for project scripts. Resolve bundled scripts relative to this SKILL.md rather than a Codex-specific absolute path. If a scene needs a GPT Image 2 bitmap asset, read the installed [codex-imagegen skill](../../../codex-imagegen/SKILL.md) and delegate that image request to the local Codex CLI; inspect its saved PNG before use. Do not send API credentials through the prompt. When used inside another video project, inherit its size, timing, audio, captions, and output directory.
+
+
 ## Creative Standard
 
 This is educational cinema. Every frame teaches. Every animation reveals structure.

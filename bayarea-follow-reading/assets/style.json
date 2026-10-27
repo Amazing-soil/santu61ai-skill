@@ -1,0 +1,15 @@
+{
+  "canvas": [1080, 1920],
+  "fps": 30,
+  "brand": "湾区表达共创社",
+  "background": "#F4F4EF",
+  "body": "#263844",
+  "emphasis": "#2E6B9E",
+  "muted": "#71818A",
+  "body_size": 46,
+  "line_height": 69,
+  "body_y": 1071,
+  "max_rows": 9,
+  "cover_hold_seconds": 0.6,
+  "slots": [[50, 420, 484, 540], [546, 420, 484, 540]]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "湾区每日跟读视频制作"
+  short_description: "提取跟读文字音频和右侧素材，接收数字人视频并按固定模板生成成片"
+  default_prompt: "使用 $bayarea-follow-reading 处理跟读视频，保存素材；收到对应数字人视频后继续合成成片。"
