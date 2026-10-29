@@ -1,0 +1,26 @@
+name: Douyin favorites package
+on:
+  push:
+    paths: ['douyin-favorites-kb/**', 'scripts/package_douyin_favorites.py', 'downloads/douyin-favorites-kb*', '.github/workflows/douyin-favorites.yml']
+  pull_request:
+    paths: ['douyin-favorites-kb/**', 'scripts/package_douyin_favorites.py', 'downloads/douyin-favorites-kb*', '.github/workflows/douyin-favorites.yml']
+permissions:
+  contents: read
+jobs:
+  offline:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -B -m unittest discover -s douyin-favorites-kb/tests -v
+        env:
+          PYTHONUTF8: '1'
+      - if: runner.os == 'Linux'
+        run: |
+          python scripts/package_douyin_favorites.py
+          git diff --exit-code -- downloads/

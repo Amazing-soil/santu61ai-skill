@@ -12,3 +12,7 @@
 以上两个第三方技能来自本机已安装副本，未声称与上游最新提交一致。保留源代码、参考文档、组件、示例、内置子技能及许可；不分发本地虚拟环境、缓存和凭证。Video Use 内置 Manim 的 README 安装命令使用其本目录实际路径。
 
 TalkCraft 演示媒体随演示页面保留，只作组件演示；不得从其演示目录提取素材另行打包分发。实际项目的 B-roll 与音效按所用素材的许可另行登记。复用组件进入成片工程时，应保留对应许可与来源信息。
+
+## douyin-favorites-kb
+
+原创内容采用仓库 MIT 许可；随包提取运行时来自同仓库的 douyin-copy-extractor。Ego、FFmpeg、MLX、mlx-whisper、faster-whisper、CTranslate2 和 Whisper 模型由使用者另行安装，未包含在 ZIP 中，遵循各自许可或服务条款。安装来源见 [安装说明](douyin-favorites-kb/INSTALL.md)，数据处理说明见 [使用协议](douyin-favorites-kb/TERMS.md)。

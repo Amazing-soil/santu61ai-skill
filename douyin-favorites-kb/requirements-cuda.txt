@@ -1,0 +1,3 @@
+# NVIDIA path: choose compatible CUDA/cuDNN per upstream. Not validated on a physical NVIDIA host here.
+faster-whisper>=1.1,<2
+ctranslate2>=4.5,<5
