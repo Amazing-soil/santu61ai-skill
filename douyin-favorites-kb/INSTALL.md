@@ -27,7 +27,7 @@ Windows 将 `python3` 换成 `py -3`。安装器只复制 `douyin-favorites-kb`�
 3. 在“已安装”中确认 `douyin-favorites-kb` 已启用，重开对话。
 4. 请 WorkBuddy 读取该技能的 `INSTALL.md`，报告实际安装目录，并按下文检查本机依赖。不要假定它与 Codex 共用路径、Python 或浏览器权限。
 
-本包按 `douyin-favorites-kb/SKILL.md` 的单技能目录打包。若你的 WorkBuddy 版本要求解压后的目录，按界面选择其中的完整文件夹；若拒绝包结构，先保留报错，不把整个合集导入作为替代。当前发布的 WorkBuddy 导入与实机采集验证范围见 [兼容性](references/compatibility.md)。
+本包按 `douyin-favorites-kb/SKILL.md` 的单技能目录打包，已在 macOS WorkBuddy 5.9.2 验证原生 ZIP 导入和已安装状态。上传后等待应用完成安全检测，不需要勾选自动安装或跳过检测。若你的 WorkBuddy 版本要求解压后的目录，按界面选择其中的完整文件夹；若拒绝包结构，先保留报错，不把整个合集导入作为替代。当前发布的 WorkBuddy 导入与实机采集验证范围见 [兼容性](references/compatibility.md)。
 
 ### Claude Code 或其他宿主
 

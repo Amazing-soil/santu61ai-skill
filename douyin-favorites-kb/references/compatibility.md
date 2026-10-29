@@ -14,8 +14,9 @@
 ## 已知验证范围
 
 - 原收藏流程在 macOS、Codex、Ego 与 MLX/Metal 环境中完成过三条真实收藏提取。该结果不代表每台电脑、每个账号或每条内容都可提取。
-- 发布包提供离线测试，检查单技能安装、已有文件保护、知识库初始化、查重、改分类、重试、文件锁和提取器任务清理。离线测试不连接抖音，不证明浏览器登录或完整采集可用。
-- Codex 安装目录和 WorkBuddy 上传入口按各自官方文档配置。WorkBuddy 原生导入、应用内调用、Windows/NVIDIA 全链路仍需在相应环境中验收，不能将目录适配说成已完成实机验证。
+- 发布包的 6 项离线测试在 macOS、Windows、Linux 的 GitHub Actions 环境均已通过（[测试记录](https://github.com/Amazing-soil/santu61ai-skill/actions/runs/40878102664)），检查单技能安装、已有文件保护、知识库初始化、查重、改分类、重试、文件锁和提取器任务清理。离线测试不连接抖音，不证明浏览器登录或完整采集可用。
+- Codex 安装目录按官方文档配置。本机 WorkBuddy 5.9.2（macOS）已通过原生“上传技能”导入 ZIP，技能出现在“已安装”列表且已启用。WorkBuddy 应用内完整采集、Windows/NVIDIA 全链路仍需在相应环境中验收；安装成功不等于真实同步成功。
+- 本机 Apple M4 上，发布包的 `doctor.py --full` 已通过 Python、FFmpeg、Ego 命令和 MLX/Metal GPU 自检。
 - CUDA 依赖提供范围约束，未生成跨平台全量依赖锁。升级底层驱动或 Python 后应重新运行自检和一条真实视频测试。
 
 ## 提取运行时来源
