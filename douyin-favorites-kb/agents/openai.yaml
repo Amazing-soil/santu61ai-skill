@@ -1,4 +1,0 @@
-interface:
-  display_name: "抖音视频收藏变成知识库"
-  short_description: "读取个人抖音收藏，提取完整文案，按对标与知识用途分类保存在本地"
-  default_prompt: "使用 $douyin-favorites-kb 整理我的抖音收藏，按当前分类规则提取完整文案并存入本地知识库。"

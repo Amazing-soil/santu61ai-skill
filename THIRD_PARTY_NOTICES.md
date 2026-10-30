@@ -15,4 +15,4 @@ TalkCraft 演示媒体随演示页面保留，只作组件演示；不得从其�
 
 ## douyin-favorites-kb
 
-原创内容采用仓库 MIT 许可；随包提取运行时来自同仓库的 douyin-copy-extractor。Ego、FFmpeg、MLX、mlx-whisper、faster-whisper、CTranslate2 和 Whisper 模型由使用者另行安装，未包含在 ZIP 中，遵循各自许可或服务条款。安装来源见 [安装说明](douyin-favorites-kb/INSTALL.md)，数据处理说明见 [使用协议](douyin-favorites-kb/TERMS.md)。
+收藏知识库的代码、依赖和许可说明见 [santu61ai-amazing-skill](https://github.com/Amazing-soil/santu61ai-amazing-skill/blob/main/THIRD_PARTY_NOTICES.md)。本仓库中的 douyin-favorites-kb 目录仅提供入口。独立的 douyin-copy-extractor 仍供本仓库的跟读等技能使用。

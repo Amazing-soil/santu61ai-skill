@@ -2,15 +2,15 @@
 
 三土沉淀的 AI Agent Skills 合集。每个 skill 都作为独立子目录维护，可复制到 Codex、Claude Code 或其他兼容 `SKILL.md` 的 Agent 环境中使用。
 
-## 抖音收藏知识库：单独安装入口
+## 抖音收藏知识库
 
-只想整理抖音收藏，请直接看 [安装与使用](douyin-favorites-kb/README.md)，或下载 [单技能 ZIP](https://github.com/Amazing-soil/santu61ai-skill/raw/refs/heads/main/downloads/douyin-favorites-kb.zip)。包内已包含所需提取运行时，不必安装其他技能。提供 Codex 安装器与 WorkBuddy 上传引导，包含依赖自检、使用协议、首次三条样本流程和故障处理；具体实机验证范围见 [兼容性](douyin-favorites-kb/references/compatibility.md)。
+代码、安装包和使用说明统一位于 [santu61ai-amazing-skill](https://github.com/Amazing-soil/santu61ai-amazing-skill)。请从新仓库的 [安装引导](https://github.com/Amazing-soil/santu61ai-amazing-skill/blob/main/douyin-favorites-kb/INSTALL.md) 开始，先检查环境再安装。
 
 ## Skills
 
 | Skill | 用途 | 语言 |
 |---|---|---|
-| [douyin-favorites-kb](./douyin-favorites-kb/) | 本人抖音收藏转 Markdown 知识库，完整文案、分类、查重与失败重试；含独立安装包 | 中文 |
+| [douyin-favorites-kb](https://github.com/Amazing-soil/santu61ai-amazing-skill/tree/main/douyin-favorites-kb) | 本人抖音收藏转 Markdown 知识库；在 santu61ai-amazing-skill 维护 | 中文 |
 | [douyin-copy-extractor](./douyin-copy-extractor/) | 提取抖音作品信息、发布文案和经校对的完整口播，按需保留媒体；需要 GPU | 中文 |
 | [bayarea-follow-reading](./bayarea-follow-reading/) | 提取跟读文案、重点字、音频和右侧素材，接收数字人视频后按湾区固定模板合成成片 | 中文 |
 | [ai-tech-video-production](./ai-tech-video-production/) | 将已剪好的中文 AI 科技口播制作成横竖版 MP4，支持全屏章节页、真人显示切换、按需字幕和可编辑工程 | 中文 |
