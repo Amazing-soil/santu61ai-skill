@@ -16,3 +16,7 @@ TalkCraft 演示媒体随演示页面保留，只作组件演示；不得从其�
 ## douyin-favorites-kb
 
 收藏知识库的代码、依赖和许可说明见 [santu61ai-amazing-skill](https://github.com/Amazing-soil/santu61ai-amazing-skill/blob/main/THIRD_PARTY_NOTICES.md)。本仓库中的 douyin-favorites-kb 目录仅提供入口。独立的 douyin-copy-extractor 仍供本仓库的跟读等技能使用。
+
+## salon-onsite-editing
+
+沙龙整理方法、样式说明和辅助代码采用本仓库MIT许可。FFmpeg、GPUPixel、HyperFrames、GSAP、MiSans与Ma Shan Zheng字体、ASR软件/模型由使用者另行准备并遵循各自许可；本目录不分发其运行库、模型、字体、BGM或现场视频。GPUPixel来源为 https://github.com/pixpark/gpupixel ，Ma Shan Zheng来源与OFL为 https://github.com/google/fonts/tree/main/ofl/mashanzheng 。Apple原生导出源码依赖本机macOS框架，不提供Windows/Linux上的等效保证。

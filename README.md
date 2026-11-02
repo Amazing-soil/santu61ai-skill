@@ -12,6 +12,7 @@
 |---|---|---|
 | [douyin-favorites-kb](https://github.com/Amazing-soil/santu61ai-amazing-skill/tree/main/douyin-favorites-kb) | 本人抖音收藏转 Markdown 知识库；在 santu61ai-amazing-skill 维护 | 中文 |
 | [douyin-copy-extractor](./douyin-copy-extractor/) | 提取抖音作品信息、发布文案和经校对的完整口播，按需保留媒体；需要 GPU | 中文 |
+| [salon-onsite-editing](./salon-onsite-editing/) | 沙龙原片分类、完整叙事剪辑、同步字幕、账号视觉与首帧封面；含极短混剪样式及新电脑运行检查 | 中文 |
 | [bayarea-follow-reading](./bayarea-follow-reading/) | 提取跟读文案、重点字、音频和右侧素材，接收数字人视频后按湾区固定模板合成成片 | 中文 |
 | [ai-tech-video-production](./ai-tech-video-production/) | 将已剪好的中文 AI 科技口播制作成横竖版 MP4，支持全屏章节页、真人显示切换、按需字幕和可编辑工程 | 中文 |
 | [ai-tech-video-assets](./ai-tech-video-assets/) | 规划或制作口播图片、HTML 动效和实操素材，提供素材表与剪辑交接说明 | 中文 |
@@ -57,6 +58,17 @@ mkdir -p ~/.codex/skills
 cp -R santu61ai-skill/santu-ai-voiceover-editing ~/.codex/skills/
 cp -R santu61ai-skill/santu-ai-voiceover-illustrations ~/.codex/skills/
 ```
+
+### 沙龙现场剪辑
+
+完整安装 `salon-onsite-editing` 单个目录。换电脑后先读 [新电脑运行](salon-onsite-editing/references/新电脑运行.md)，检查 Python、FFmpeg/ffprobe、字体和所需渲染环境，再提供原片与本批人物、账号资料。
+
+```text
+使用 $salon-onsite-editing 整理这些沙龙现场素材，先分类、出剪辑计划，每类一条样片。
+主要讲话听不清的只留混剪备用，原声按完整叙事剪辑，成片配字幕与首帧封面。
+```
+
+包含整理方法、L06原声样式、M01极短动效、颜色与美颜、环境检查和有授权的归档方法。原片、字体、GPU运行库和平台登录态不随Skill同步；本系列30首配套音频独立放在[私有音频仓库](https://github.com/Amazing-soil/salon-audio-assets)，有权限的账号可按[音频同步方法](salon-onsite-editing/references/音频素材同步.md)取得。公开目录不分发原曲，不自动安排发布或清理原片。
 
 ### 每日跟读视频
 

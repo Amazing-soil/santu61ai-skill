@@ -1,0 +1,14 @@
+{
+  "example_only": true,
+  "event": {"business_date": null, "source_directory": "原片目录", "output_directory": "新批次目录"},
+  "sources": [],
+  "cuts": [{
+    "id": "L01", "purpose": "原声中长主题", "brand": "湾区表达共创社",
+    "topic": "根据真实原声填写一个具体主题",
+    "narrative_review": "待查看完整原声", "speech_clarity_review": "待核听主要人物", "person_restrictions_review": "待核对本批人物资料",
+    "segments": [{"source_file": "source.mov", "source_sha256": null, "original_start_seconds": 0, "original_end_seconds": 0, "roughcut_id": null, "roughcut_start_seconds": null, "roughcut_end_seconds": null}],
+    "subtitle_file": "字幕/L01.srt", "cover_hold_seconds": 0.6, "title_stages": [],
+    "music": {"source": null, "source_start_seconds": null, "source_end_seconds": null, "gain": null},
+    "allowed_reuse": [], "publishing_status": "未排期"
+  }]
+}

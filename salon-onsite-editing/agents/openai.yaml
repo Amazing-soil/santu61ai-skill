@@ -1,0 +1,7 @@
+interface:
+  display_name: "沙龙现场剪辑"
+  short_description: "整理沙龙原片、按声音分类剪辑，制作账号视觉、独立封面并核验归档"
+  default_prompt: "用 $salon-onsite-editing 处理我提供的现场沙龙素材目录，默认沿用轻美颜、三账号字体配色和独立封面，先分类、出计划，每类一条样片给我确认。"
+
+policy:
+  allow_implicit_invocation: true
