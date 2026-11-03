@@ -75,6 +75,8 @@ HTML/SVG 可使用 [随包组件](composition-components.md)，Remotion 可读�
 
 开头结尾大字、章节标题可同用该字体保持统一；正文说明文字仍用系统黑体。
 
+用户要求「思源粗宋/宋体重点字」「动态字幕 + 音效」「安全区导视」时，改用 `ai-tech-video-assets` 的 [口播剪辑预设](../../ai-tech-video-assets/references/talking-head-presets.md)：`talking_head_presets.py` 按同一 cue 时间线导出 ASS / 透明 MOV / `sfx.wav`，作为 Remotion 成片上层叠加。字幕 Y 用本技能的字幕带（`--layout` 覆盖 `caption_y`），不套用其全屏真人坐标；未指定时仍用上面的默认样式。
+
 ### 字体加载（Remotion）
 
 在 Remotion 并发渲染中，用 `FontFace(url)` + `delayRender` 异步加载会在后台标签页卡死超时（实测 28s/58s 均超时，单帧 still 却正常）。可靠做法：
@@ -136,6 +138,7 @@ HTML/SVG 可使用 [随包组件](composition-components.md)，Remotion 可读�
 | 关键数字结果、达成 | `feedback/achievement`、`feedback/success-chime` | -19 ~ -21 |
 
 - 音效库：`~/.agents/skills/huashu-design/assets/sfx/<分类>/<名>.mp3`（ElevenLabs 生成，说明见该技能 `references/sfx-library.md`）。用到的文件复制进工程 `public/sfx/`，在 `timeline.json` 的 `sfx` 写 `{t, file, gainDb}`，`t` 与画面动作同一帧。
+- 情绪类点位（疑问、转折、尴尬、震惊、知识点、数据）可用三土音效库：私有仓库 `Amazing-soil/ai-tech-video-presets` 的 `sound-library/`（475 个去重 WAV + 场景索引），本机路径 `~/obsidian/02-内容创作/视频技能关联仓库/ai-tech-video-presets/sound-library`。用 `python3 sound-library/agent_query.py "疑问" --limit 5` 按场景查素材 ID 和路径，或设 `SANTU_SFX_DIR` 指向该目录。素材未逐条听审，用前试听；同样写进 `timeline.json` 的 `sfx` 并走下面的统一混音。
 - 混音用 [scripts/mix_sfx.py](../scripts/mix_sfx.py)：每个音效先按峰值归一到 -1 dB，再加 `gainDb`；人声电平不变；`amix normalize=0` + `alimiter`；视频流 copy，音频 AAC 192k。调音效只需重混音，不重渲画面。
 - 验收：用成片减原声得到音效残差，逐点比较 0.3 s 窗口内音效与人声电平。说话中的点位音效应低于人声约 3 dB 以上；盖住数字、产品名、结论词的必须降。停顿中的转场、钩子印章可与人声持平。工具无法听音时如实说明只做了电平核对，请用户试听。
 - 不在每个字幕切换处都加音效；同一类音效连续出现时降低增益或隔一个点位。

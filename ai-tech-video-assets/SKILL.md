@@ -1,6 +1,6 @@
 ---
 name: ai-tech-video-assets
-description: 为中文 AI 科技口播规划或制作图片、HTML 动效和实操素材，提供逐段素材表与剪辑交接说明。适用于素材任务；完整视频剪辑使用成片制作流程。
+description: 为中文 AI 科技口播规划或制作图片、HTML 动效、实操录屏、曲线变速及口播字幕素材。提供字幕重点字、竖屏安全区、动态字幕和音效预设，以及逐段素材表与剪辑交接说明。完整成片使用成片制作流程。
 ---
 
 # AI Tech Video Assets
@@ -26,6 +26,8 @@ description: 为中文 AI 科技口播规划或制作图片、HTML 动效和实�
 | 拆段与素材选择 | [脚本分段](references/script-segmentation.md)、[素材选择](references/asset-decision-tree.md) |
 | 布局、字体、色彩 | [视觉规则](references/visual-rules.md) |
 | HTML 动效 | [动效检索与实现](references/motion-search-workflow.md)；需要模式参考时读 [Anime.js patterns](references/animejs-patterns.md) |
+| 真实视频曲线变速、动作卡点或变速转场素材 | [曲线变速五种预设](references/speed-ramps.md) |
+| 口播字体、重点字、安全区、文字动效与本地音效 | [口播剪辑预设](references/talking-head-presets.md) |
 | 生成图片 | [图片提示词](references/image-prompt-rules.md) |
 | 交付 | [验收清单](references/acceptance-checklist.md) |
 
